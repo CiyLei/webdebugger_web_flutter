@@ -34,43 +34,21 @@ class _DeviceState extends State<Device> {
               );
             } else if (index == 1) {
               return SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (constraints.maxWidth < 600) {
+                      return SizedBox(
+                        height: 700,
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text("FPS监控"),
+                          children: charts(),
                         ),
-                        Container(
-                          height: 300,
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          width: double.maxFinite,
-                          child: FpsChart(),
-                        )
-                      ],
-                    )),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text("内存监控"),
-                        ),
-                        Container(
-                          height: 300,
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          width: double.maxFinite,
-                          child: MemoryChart(),
-                        )
-                      ],
-                    ))
-                  ],
+                      );
+                    } else {
+                      return Row(
+                        children: charts(),
+                      );
+                    }
+                  },
                 ),
               );
             }
@@ -90,6 +68,45 @@ class _DeviceState extends State<Device> {
             }
           },
         ));
+  }
+
+  List<Widget> charts() {
+    return [
+      Expanded(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text("FPS监控"),
+          ),
+          Container(
+            height: 300,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            width: double.maxFinite,
+            child: FpsChart(),
+          )
+        ],
+      )),
+      Expanded(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text("内存监控"),
+          ),
+          Container(
+            height: 300,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            width: double.maxFinite,
+            child: MemoryChart(),
+          )
+        ],
+      ))
+    ];
   }
 
   Widget groupTitle(String title) {
