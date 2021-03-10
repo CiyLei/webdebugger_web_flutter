@@ -49,6 +49,11 @@ class _HomeState extends State<Home> {
             onSelectModule: (module) =>
                 context.read<HomeProvider>().selectModule(module),
           ),
+          Container(
+            width: 1,
+            height: double.maxFinite,
+            color: Color.fromARGB(255, 231, 231, 231),
+          ),
           Expanded(
               child: Padding(
             padding: EdgeInsets.all(8),

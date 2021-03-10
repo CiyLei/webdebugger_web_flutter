@@ -24,6 +24,9 @@ class ApiStore {
   static String webSocketUrl(int webSocketPort) =>
       "ws://${_hostName()}:$webSocketPort";
 
+  static String dbUrl(int dbPort) =>
+      "http://${_hostName()}:$dbPort";
+
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
     String response = await NetUtil.Get("${_url()}/device/info");

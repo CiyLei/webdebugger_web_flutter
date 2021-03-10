@@ -28,24 +28,24 @@ class AppProvider with ChangeNotifier {
   _initWebSocket() {
     if (deviceInfo != null && deviceInfo.success && deviceWebSocket == null) {
       var webSocketPort = deviceInfo.data.port;
-      deviceWebSocket =
-          WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/device");
-      deviceWebSocket.onMessage.listen((event) {
-        FpsInfo fpsInfo = FpsInfo.fromJson(json.decode(event.data.toString()));
-        if (fpsInfo.fps <= 0) return;
-        fpsMap[DateTime.now().millisecondsSinceEpoch] = fpsInfo;
-        if (fpsMap.length > 10) {
-          fpsMap.remove(fpsMap.keys.first);
-        }
-        notifyListeners();
-      });
+      _initDeviceWebSocket(webSocketPort);
     }
   }
-}
 
-// class TimeLine<T> {
-//   T data;
-//   DateTime dateTime = DateTime.now();
-//
-//   TimeLine(this.data, {this.dateTime});
-// }
+  void _initDeviceWebSocket(int webSocketPort) {
+    deviceWebSocket =
+        WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/device");
+    deviceWebSocket.onMessage.listen((event) {
+      FpsInfo fpsInfo = FpsInfo.fromJson(json.decode(event.data.toString()));
+      if (fpsInfo.fps <= 0) return;
+      fpsMap[DateTime.now().millisecondsSinceEpoch] = fpsInfo;
+      if (fpsMap.length > 10) {
+        fpsMap.remove(fpsMap.keys.first);
+      }
+      notifyListeners();
+    });
+    deviceWebSocket.onClose.listen((event) {
+      _initDeviceWebSocket(webSocketPort);
+    });
+  }
+}

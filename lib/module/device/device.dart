@@ -2,8 +2,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:webdebugger_web_flutter/common/app_provider.dart';
 import 'package:webdebugger_web_flutter/common/request_api.dart';
-import 'package:webdebugger_web_flutter/device/chart.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
+
+import 'chart.dart';
 
 class Device extends StatefulWidget {
   @override
