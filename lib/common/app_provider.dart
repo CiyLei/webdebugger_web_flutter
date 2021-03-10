@@ -1,13 +1,17 @@
+import 'dart:collection';
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:flutter/foundation.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
+import 'package:webdebugger_web_flutter/model/fps_info.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
 class AppProvider with ChangeNotifier {
   BaseResponse<DeviceInfo> deviceInfo;
   WebSocket deviceWebSocket;
+  Map<int, FpsInfo> fpsMap = LinkedHashMap();
 
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
@@ -26,6 +30,22 @@ class AppProvider with ChangeNotifier {
       var webSocketPort = deviceInfo.data.port;
       deviceWebSocket =
           WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/device");
+      deviceWebSocket.onMessage.listen((event) {
+        FpsInfo fpsInfo = FpsInfo.fromJson(json.decode(event.data.toString()));
+        if (fpsInfo.fps <= 0) return;
+        fpsMap[DateTime.now().millisecondsSinceEpoch] = fpsInfo;
+        if (fpsMap.length > 10) {
+          fpsMap.remove(fpsMap.keys.first);
+        }
+        notifyListeners();
+      });
     }
   }
 }
+
+// class TimeLine<T> {
+//   T data;
+//   DateTime dateTime = DateTime.now();
+//
+//   TimeLine(this.data, {this.dateTime});
+// }

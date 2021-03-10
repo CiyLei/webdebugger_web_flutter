@@ -1,9 +1,8 @@
-import 'dart:html';
-
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:webdebugger_web_flutter/common/app_provider.dart';
 import 'package:webdebugger_web_flutter/common/request_api.dart';
+import 'package:webdebugger_web_flutter/device/chart.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
 
 class Device extends StatefulWidget {
@@ -34,12 +33,43 @@ class _DeviceState extends State<Device> {
               );
             } else if (index == 1) {
               return SliverToBoxAdapter(
-                child: Container(
-                  height: 300,
-                  child: StreamBuilder(
-                    stream: appProvider.deviceWebSocket.onMessage,
-                    builder: this.realTime,
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text("FPS监控"),
+                        ),
+                        Container(
+                          height: 300,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          width: double.maxFinite,
+                          child: FpsChart(),
+                        )
+                      ],
+                    )),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text("内存监控"),
+                        ),
+                        Container(
+                          height: 300,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          width: double.maxFinite,
+                          child: MemoryChart(),
+                        )
+                      ],
+                    ))
+                  ],
                 ),
               );
             }
@@ -71,10 +101,6 @@ class _DeviceState extends State<Device> {
     );
   }
 
-  Widget realTime(BuildContext context, AsyncSnapshot<MessageEvent> snapshot) {
-    return Text(snapshot.data.data.toString());
-  }
-
   Widget infoCard(BuildContext context, Infos info) {
     return Card(
       child: Container(
@@ -87,7 +113,7 @@ class _DeviceState extends State<Device> {
               info.name,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Container(
+            SizedBox(
               height: 8,
             ),
             SelectableText(info.value),
