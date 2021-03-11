@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
           Container(
             width: 1,
             height: double.maxFinite,
-            color: Color.fromARGB(255, 231, 231, 231),
+            color: Theme.of(context).dividerColor,
           ),
           Expanded(
               child: Padding(

@@ -20,46 +20,59 @@ enum NetState { success, error }
 class RequestApi<T> extends StatefulWidget {
   GetApiFunction<T> apiFunction;
   DataWidgetBuilder<T> dataWidgetBuilder;
-  ResponseState<T> responseState;
+  RequestApiController controller;
 
   RequestApi(
-      {Key key, @required this.apiFunction, @required this.dataWidgetBuilder})
+      {Key key,
+      @required this.apiFunction,
+      @required this.dataWidgetBuilder,
+      this.controller})
       : super(key: key);
 
   @override
-  _RequestApiState createState() => _RequestApiState<T>();
+  _RequestApiState createState() =>
+      _RequestApiState<T>(controller: this.controller);
 }
 
 class _RequestApiState<T> extends State<RequestApi> {
+  RequestApiController controller;
+  ResponseState<T> responseState;
+
+  _RequestApiState({this.controller});
+
   @override
   void initState() {
+    if (controller != null) {
+      controller._refreshHandle(() {
+        _reGetApi();
+      });
+    }
     _reGetApi();
     super.initState();
   }
 
   _reGetApi() async {
     setState(() {
-      widget.responseState = null;
+      responseState = null;
     });
     try {
       var response = await widget.apiFunction();
-      widget.responseState =
+      responseState =
           ResponseState<T>(response: response, netState: NetState.success);
     } catch (e) {
       print(e);
-      widget.responseState =
-          ResponseState<T>(error: e, netState: NetState.error);
+      responseState = ResponseState<T>(error: e, netState: NetState.error);
     }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.responseState == null) {
+    if (responseState == null) {
       return Loading();
-    } else if (widget.responseState.netState == NetState.success) {
+    } else if (responseState.netState == NetState.success) {
       return Center(
-        child: widget.dataWidgetBuilder(context, widget.responseState.response),
+        child: widget.dataWidgetBuilder(context, responseState.response),
       );
     } else {
       return LoadError(retryCallback: () {
@@ -73,11 +86,21 @@ class _RequestApiState<T> extends State<RequestApi> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 24.0),
-                      child: SelectableText(widget.responseState.error.toString()),
+                      child: SelectableText(responseState.error.toString()),
                     )
                   ],
                 ));
       });
     }
+  }
+}
+
+class RequestApiController {
+  VoidCallback _refreshCallback;
+
+  _refreshHandle(VoidCallback callback) => _refreshCallback = callback;
+
+  refresh() {
+    if (_refreshCallback != null) _refreshCallback();
   }
 }

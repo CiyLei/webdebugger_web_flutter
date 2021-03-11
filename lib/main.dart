@@ -6,6 +6,7 @@ import 'package:webdebugger_web_flutter/module/db/db.dart';
 import 'home.dart';
 import 'module.dart';
 import 'module/device/device.dart';
+import 'module/interface/interface.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -17,7 +18,7 @@ void main() {
 
 final List<Module> moduleList = [
   Module('设备信息', Icons.perm_device_info, Device()),
-  Module('界面', Icons.account_tree, SelectableText('界面')),
+  Module('界面', Icons.account_tree, Interface()),
   Module('控制台', Icons.pest_control, SelectableText('控制台')),
   Module('网络日志', Icons.network_check, SelectableText('网络日志')),
   Module('截屏/录屏', Icons.add_a_photo, SelectableText('截屏/录屏')),
@@ -33,9 +34,14 @@ class Webdebugger extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WebDebugger',
-      home: ChangeNotifierProvider(
-        create: (_) => HomeProvider(moduleList.first),
-        child: Home(),
+      home: LayoutBuilder(
+        builder: (context, constraints) {
+          return ChangeNotifierProvider(
+            create: (_) => HomeProvider(moduleList.first,
+                isExpand: constraints.maxWidth > 600),
+            child: Home(),
+          );
+        },
       ),
     );
   }
