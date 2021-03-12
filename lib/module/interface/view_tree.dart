@@ -6,7 +6,7 @@ import 'package:webdebugger_web_flutter/model/children.dart';
 
 class ViewTree extends StatelessWidget {
   List<Children> childrenList = [];
-  ScrollController _scrollController;
+  ScrollController _scrollController = ScrollController();
   double maxWidth = 0.0;
   final TextStyle _textStyle = TextStyle(fontSize: 14);
   ValueChanged<Children> onSelectedCallback;

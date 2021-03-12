@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html' as html;
 import 'package:webdebugger_web_flutter/constant.dart';
+import 'package:webdebugger_web_flutter/model/attributes.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
@@ -42,5 +43,38 @@ class ApiStore {
         (data) => (data as List)
             .map((e) => e == null ? null : Children.fromJson(e))
             .toList());
+  }
+
+  Future<BaseResponse<bool>> installMonitorView() async {
+    String response = await NetUtil.Get("${_url()}/view/installMonitorView");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  Future<BaseResponse<bool>> unInstallMonitorView() async {
+    String response = await NetUtil.Get("${_url()}/view/unInstallMonitorView");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  Future<BaseResponse<bool>> selectView(String code) async {
+    String response =
+        await NetUtil.Get("${_url()}/view/selectView", params: {"code": code});
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  Future<BaseResponse<List<Attributes>>> getAttributes(String code) async {
+    String response = await NetUtil.Get("${_url()}/view/getAttributes",
+        params: {"code": code});
+    return BaseResponse.fromJson(
+        json.decode(response),
+        (data) => (data as List)
+            .map((e) => e == null ? null : Attributes.fromJson(e))
+            .toList());
+  }
+
+  Future<BaseResponse<bool>> setAttributes(
+      String code, String attribute, String value) async {
+    String response = await NetUtil.Get("${_url()}/view/setAttributes",
+        params: {"code": code, "attribute": attribute, "value": value});
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
   }
 }

@@ -13,6 +13,7 @@ class Children extends Object {
   @JsonKey(name: 'label')
   String label;
 
+  @JsonKey(ignore: true)
   bool expand = true;
 
   Children(
