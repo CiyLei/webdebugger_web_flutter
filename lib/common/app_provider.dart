@@ -13,6 +13,23 @@ class AppProvider with ChangeNotifier {
   WebSocket deviceWebSocket;
   Map<int, FpsInfo> fpsMap = LinkedHashMap();
 
+  var codeImport = '''
+import android.widget.Toast;
+import java.util.Random;
+''';
+  var code = '''
+int i = 0;
+while(i < 10) {
+    System.out.println(new Random().nextInt());
+    i++;
+}
+Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
+  ''';
+
+  var result = "";
+
+  var isRunMainThread = true;
+
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
     if (deviceInfo != null && deviceInfo.success) {

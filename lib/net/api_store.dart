@@ -77,4 +77,14 @@ class ApiStore {
         params: {"code": code, "attribute": attribute, "value": value});
     return BaseResponse.fromJson(json.decode(response), (data) => true);
   }
+
+  Future<BaseResponse<String>> execute(
+      String code, String import, bool runOnMainThread) async {
+    String response = await NetUtil.Post("${_url()}/code/execute", params: {
+      "code": code,
+      "import": import,
+      "runOnMainThread": runOnMainThread
+    });
+    return BaseResponse.fromJson(json.decode(response), (data) => data);
+  }
 }
