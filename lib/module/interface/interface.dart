@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:webdebugger_web_flutter/common/app_provider.dart';
 import 'package:webdebugger_web_flutter/common/drag_panel.dart';
 import 'package:webdebugger_web_flutter/common/request_api.dart';
 import 'package:webdebugger_web_flutter/model/attributes.dart';
@@ -16,6 +18,7 @@ class Interface extends StatefulWidget {
 
 class _InterfaceState extends State<Interface> {
   Children _selectChildren;
+  List<Children> _childrenList = [];
   RequestApiController _controller;
   bool _selectedTouch = false;
 
@@ -25,13 +28,38 @@ class _InterfaceState extends State<Interface> {
     super.initState();
   }
 
+  Children _findChildren(String id, List<Children> list) {
+    for (var children in list) {
+      if (children.id == id)
+        return children;
+      else if (children.children != null) {
+        var result = _findChildren(id, children.children);
+        if (result != null) return result;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var appProvider = context.watch<AppProvider>();
+    var children = _findChildren(appProvider.selectViewId, _childrenList);
+    if (children != null &&
+        ((_selectChildren != null && _selectChildren.id != children.id) ||
+            _selectChildren == null)) {
+      setState(() {
+        _selectChildren = children;
+        _controller.refresh();
+      });
+    }
     return DragPanel(
         first: Container(
           decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).dividerColor)),
           child: ViewTreeController(
+            onGetChildrenList: (list) {
+              _childrenList = list;
+            },
             selectedTouch: _selectedTouch,
             onSelectedTouchCallback: (s) {
               setState(() {
@@ -50,6 +78,7 @@ class _InterfaceState extends State<Interface> {
                 _selectedTouch = true;
                 _selectChildren = children;
                 _controller.refresh();
+                ApiStore.instance.selectView(_selectChildren.id);
               });
             },
           ),
@@ -71,7 +100,6 @@ class _InterfaceState extends State<Interface> {
   }
 
   Future<BaseResponse<List<Attributes>>> getAttributes() async {
-    ApiStore.instance.selectView(_selectChildren.id);
     return ApiStore.instance.getAttributes(_selectChildren.id);
   }
 }

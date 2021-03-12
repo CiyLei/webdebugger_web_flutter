@@ -12,6 +12,8 @@ class AppProvider with ChangeNotifier {
   BaseResponse<DeviceInfo> deviceInfo;
   WebSocket deviceWebSocket;
   Map<int, FpsInfo> fpsMap = LinkedHashMap();
+  WebSocket monitorWebSocket;
+  String selectViewId = "";
 
   var codeImport = '''
 import android.widget.Toast;
@@ -46,6 +48,7 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
     if (deviceInfo != null && deviceInfo.success && deviceWebSocket == null) {
       var webSocketPort = deviceInfo.data.port;
       _initDeviceWebSocket(webSocketPort);
+      _initMonitorWebSocket(webSocketPort);
     }
   }
 
@@ -63,6 +66,18 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
     });
     deviceWebSocket.onClose.listen((event) {
       _initDeviceWebSocket(webSocketPort);
+    });
+  }
+
+  void _initMonitorWebSocket(int webSocketPort) {
+    monitorWebSocket =
+        WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/view/monitor");
+    monitorWebSocket.onMessage.listen((event) {
+      selectViewId = event.data.toString();
+      notifyListeners();
+    });
+    monitorWebSocket.onClose.listen((event) {
+      _initMonitorWebSocket(webSocketPort);
     });
   }
 }

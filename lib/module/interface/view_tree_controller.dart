@@ -11,12 +11,14 @@ class ViewTreeController extends StatefulWidget {
   ValueChanged<Children> onSelectedCallback;
   bool selectedTouch = false;
   ValueChanged<bool> onSelectedTouchCallback;
+  ValueChanged<List<Children>> onGetChildrenList;
 
   ViewTreeController(
       {Key key,
       this.selectChildren,
       this.onSelectedCallback,
       this.selectedTouch,
+      this.onGetChildrenList,
       this.onSelectedTouchCallback})
       : super(key: key);
 
@@ -69,6 +71,9 @@ class _ViewTreeControllerState extends State<ViewTreeController> {
                 controller: _apiController,
                 apiFunction: ApiStore.instance.getViewTree,
                 dataWidgetBuilder: (context, response) {
+                  if (widget.onGetChildrenList != null) {
+                    widget.onGetChildrenList(response.data);
+                  }
                   return ViewTree(
                     childrenList: response.data,
                     selectChildren: widget.selectChildren,
