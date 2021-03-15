@@ -1,0 +1,83 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'net_work.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+NetWork _$NetWorkFromJson(Map<String, dynamic> json) {
+  return NetWork(
+    json['callEndTime'] as int,
+    json['callFailError'] as String,
+    json['callFailErrorDetail'] as String,
+    json['callFailedTime'] as int,
+    json['callStartTime'] as int,
+    json['code'] as int,
+    json['connectEndTime'] as int,
+    json['connectFailedTime'] as int,
+    json['connectStartTime'] as int,
+    json['connectionAcquiredTime'] as int,
+    json['connectionReleasedTime'] as int,
+    json['dnsEndTime'] as int,
+    json['dnsStartTime'] as int,
+    json['id'] as int,
+    json['isSent'] as bool,
+    json['method'] as String,
+    json['requestBody'] as String,
+    json['requestBodyEndTime'] as int,
+    json['requestBodyStartTime'] as int,
+    json['requestDataTime'] as String,
+    json['requestHeaders'] as Map<String, dynamic>,
+    json['requestHeadersEndTime'] as int,
+    json['requestHeadersStartTime'] as int,
+    json['requestTime'] as int,
+    json['responseBody'] as String,
+    json['responseBodyEndTime'] as int,
+    json['responseBodyStartTime'] as int,
+    json['responseHeaders'] as Map<String, dynamic>,
+    json['responseHeadersEndTime'] as int,
+    json['responseHeadersStartTime'] as int,
+    json['secureConnectEndTime'] as int,
+    json['secureConnectStartTime'] as int,
+    json['timeCost'] as int,
+    json['url'] as String,
+  );
+}
+
+Map<String, dynamic> _$NetWorkToJson(NetWork instance) => <String, dynamic>{
+      'callEndTime': instance.callEndTime,
+      'callFailError': instance.callFailError,
+      'callFailErrorDetail': instance.callFailErrorDetail,
+      'callFailedTime': instance.callFailedTime,
+      'callStartTime': instance.callStartTime,
+      'code': instance.code,
+      'connectEndTime': instance.connectEndTime,
+      'connectFailedTime': instance.connectFailedTime,
+      'connectStartTime': instance.connectStartTime,
+      'connectionAcquiredTime': instance.connectionAcquiredTime,
+      'connectionReleasedTime': instance.connectionReleasedTime,
+      'dnsEndTime': instance.dnsEndTime,
+      'dnsStartTime': instance.dnsStartTime,
+      'id': instance.id,
+      'isSent': instance.isSent,
+      'method': instance.method,
+      'requestBody': instance.requestBody,
+      'requestBodyEndTime': instance.requestBodyEndTime,
+      'requestBodyStartTime': instance.requestBodyStartTime,
+      'requestDataTime': instance.requestDataTime,
+      'requestHeaders': instance.requestHeaders,
+      'requestHeadersEndTime': instance.requestHeadersEndTime,
+      'requestHeadersStartTime': instance.requestHeadersStartTime,
+      'requestTime': instance.requestTime,
+      'responseBody': instance.responseBody,
+      'responseBodyEndTime': instance.responseBodyEndTime,
+      'responseBodyStartTime': instance.responseBodyStartTime,
+      'responseHeaders': instance.responseHeaders,
+      'responseHeadersEndTime': instance.responseHeadersEndTime,
+      'responseHeadersStartTime': instance.responseHeadersStartTime,
+      'secureConnectEndTime': instance.secureConnectEndTime,
+      'secureConnectStartTime': instance.secureConnectStartTime,
+      'timeCost': instance.timeCost,
+      'url': instance.url,
+    };

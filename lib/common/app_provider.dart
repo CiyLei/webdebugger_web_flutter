@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
 import 'package:webdebugger_web_flutter/model/fps_info.dart';
+import 'package:webdebugger_web_flutter/model/net_work.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
 /// 全局的状态存储处
@@ -51,6 +52,12 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
   /// “控制台”模块，控制代码是否运行在主线程中
   var isRunMainThread = true;
 
+  /// “网络日志”模块中的实时接收网络请求的WebSocket
+  WebSocket netWorkLogWebSocket;
+
+  /// 网络请求列表
+  List<NetWork> netWorkList = [];
+
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
     if (deviceInfo != null && deviceInfo.success) {
@@ -66,15 +73,19 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
 
   /// 初始化WebSocket
   _initWebSocket() {
-    if (deviceInfo != null && deviceInfo.success && deviceWebSocket == null) {
+    if (deviceInfo != null && deviceInfo.success) {
       var webSocketPort = deviceInfo.data.port;
       _initDeviceWebSocket(webSocketPort);
       _initMonitorWebSocket(webSocketPort);
+      _initNetWorkLogWebSocket(webSocketPort);
     }
   }
 
   /// 初始化“设备信息”模块的WebSocket，实时接收fps和内存信息
   void _initDeviceWebSocket(int webSocketPort) {
+    if (deviceWebSocket != null) {
+      deviceWebSocket.close();
+    }
     deviceWebSocket =
         WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/device");
     deviceWebSocket.onMessage.listen((event) {
@@ -96,6 +107,9 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
 
   /// 初始化“界面”模块的WebSocket，实时监听触摸选择了哪些view
   void _initMonitorWebSocket(int webSocketPort) {
+    if (monitorWebSocket != null) {
+      monitorWebSocket.close();
+    }
     monitorWebSocket =
         WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/view/monitor");
     monitorWebSocket.onMessage.listen((event) {
@@ -107,5 +121,29 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
     monitorWebSocket.onClose.listen((event) {
       _initMonitorWebSocket(webSocketPort);
     });
+  }
+
+  /// 初始化“网络”模块中接收网络请求的WebSocket
+  void _initNetWorkLogWebSocket(int webSocketPort) {
+    if (netWorkLogWebSocket != null) {
+      netWorkLogWebSocket.close();
+    }
+    netWorkLogWebSocket =
+        WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/logcat/net");
+    netWorkLogWebSocket.onMessage.listen((event) {
+      netWorkList.insert(
+          0, NetWork.fromJson(json.decode(event.data.toString())));
+      notifyListeners();
+    });
+    // 如果断开了，直接尝试重连
+    netWorkLogWebSocket.onClose.listen((event) {
+      _initNetWorkLogWebSocket(webSocketPort);
+    });
+  }
+
+  /// 清除网络日志
+  void clearNetWorkLog() {
+    netWorkList.clear();
+    notifyListeners();
   }
 }
