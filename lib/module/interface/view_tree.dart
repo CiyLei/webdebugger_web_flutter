@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
 
-class ViewTree extends StatelessWidget {
-  List<Children> childrenList = [];
-  ScrollController _scrollController = ScrollController();
-  double maxWidth = 0.0;
-  final TextStyle _textStyle = TextStyle(fontSize: 14);
-  ValueChanged<Children> onSelectedCallback;
-  Children selectChildren;
+// 展示节点列表的widget
+class ViewTree extends StatefulWidget {
+  /// 所有的节点列表
+  final List<Children> childrenList;
+
+  /// 选中节点的回调
+  final ValueChanged<Children> onSelectedCallback;
+
+  /// 选中的节点
+  final Children selectChildren;
 
   ViewTree(
       {Key key,
@@ -19,9 +22,25 @@ class ViewTree extends StatelessWidget {
       this.selectChildren})
       : super(key: key);
 
+  @override
+  _ViewTreeState createState() => _ViewTreeState();
+}
+
+class _ViewTreeState extends State<ViewTree> {
+  /// 滚动的控制器
+  final ScrollController _scrollController = ScrollController();
+
+  /// 记录节点列表中最大的宽度的widget，让widget宽度小于item的宽度时，不会变形
+  double _maxWidth = 0.0;
+
+  /// 节点文字的样式
+  final TextStyle _textStyle = TextStyle(fontSize: 14);
+
+  /// 计算节点列表widget的最大宽度
   double calcMaxChildrenWidth(BuildContext context) {
     var maxWidth = 0.0;
-    for (var value in childrenList) {
+    // 遍历节点，计算最大宽度
+    for (var value in widget.childrenList) {
       var width = calcChildrenWidth(context, value, 0);
       maxWidth = width > maxWidth ? width : maxWidth;
     }
@@ -48,8 +67,9 @@ class ViewTree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (maxWidth == 0) {
-      maxWidth = calcMaxChildrenWidth(context);
+    // 只计算一遍
+    if (_maxWidth == 0) {
+      _maxWidth = calcMaxChildrenWidth(context);
     }
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -61,16 +81,23 @@ class ViewTree extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Container(
               padding: const EdgeInsets.only(bottom: 8),
-              width: max(constraints.maxWidth, maxWidth),
+              width: max(constraints.maxWidth, _maxWidth),
               child: ListView(
-                children: childrenList
+                children: widget.childrenList
+                    // 同一级的节点在一个ListView中的一个Item去渲染，其子节点用Column去渲染
                     .map((e) => ViewTreeItem(
+                          // 节点的宽度
                           constraintsWidth: constraints.maxWidth,
+                          // 节点的文字样式
                           textStyle: _textStyle,
+                          // 节点的等级（父节点的等级+1，控制左边的padding）
                           level: 0,
+                          // 节点
                           children: e,
-                          selectChildren: this.selectChildren,
-                          onSelectedCallback: this.onSelectedCallback,
+                          // 选中的节点
+                          selectChildren: widget.selectChildren,
+                          // 选中节点的回调
+                          onSelectedCallback: widget.onSelectedCallback,
                         ))
                     .toList(),
               ),
@@ -82,13 +109,25 @@ class ViewTree extends StatelessWidget {
   }
 }
 
+/// 展示节点的widget
 class ViewTreeItem extends StatefulWidget {
-  Children children;
-  int level;
-  TextStyle textStyle;
-  double constraintsWidth;
-  Children selectChildren;
-  ValueChanged<Children> onSelectedCallback;
+  /// 当前节点
+  final Children children;
+
+  // 节点的等级（父节点的等级+1，控制左边的padding）
+  final int level;
+
+  // 节点的文字样式
+  final TextStyle textStyle;
+
+  // 节点的宽度
+  final double constraintsWidth;
+
+  // 选中的节点
+  final Children selectChildren;
+
+  // 选中节点的回调
+  final ValueChanged<Children> onSelectedCallback;
 
   ViewTreeItem(
       {Key key,
@@ -107,9 +146,11 @@ class ViewTreeItem extends StatefulWidget {
 class _ViewTreeItemState extends State<ViewTreeItem> {
   @override
   Widget build(BuildContext context) {
+    // 当前渲染的节点是否是选中的节点
     var selected = widget.children == widget.selectChildren;
     return GestureDetector(
       onTap: () {
+        // 选中节点的回调
         if (widget.onSelectedCallback != null) {
           widget.onSelectedCallback(widget.children);
         }
@@ -151,6 +192,7 @@ class _ViewTreeItemState extends State<ViewTreeItem> {
             ],
           ),
         ),
+        // 子节点收缩动画
         AnimatedSwitcher(
           child: widget.children.expand
               ? Column(

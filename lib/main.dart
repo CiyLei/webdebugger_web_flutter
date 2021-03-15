@@ -17,6 +17,7 @@ void main() {
   ));
 }
 
+/// 模块信息
 final List<Module> moduleList = [
   Module('设备信息', Icons.perm_device_info, Device()),
   Module('界面', Icons.account_tree, Interface()),
@@ -37,6 +38,7 @@ class Webdebugger extends StatelessWidget {
       title: 'WebDebugger',
       home: LayoutBuilder(
         builder: (context, constraints) {
+          // 判断设备宽度，决定默认是否展开模块列表
           return ChangeNotifierProvider(
             create: (_) => HomeProvider(moduleList.first,
                 isExpand: constraints.maxWidth > 600),

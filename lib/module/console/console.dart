@@ -5,21 +5,18 @@ import 'package:webdebugger_web_flutter/common/app_provider.dart';
 import 'package:webdebugger_web_flutter/module/console/code_editor.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
+/// “控制台”模块
 class Console extends StatefulWidget {
   @override
   _ConsoleState createState() => _ConsoleState();
 }
 
 class _ConsoleState extends State<Console> {
+  /// 导入代码的编辑控制器
   TextEditingController _importController;
-  TextEditingController _codeController;
 
-  // @override
-  // void initState() {
-  //   _importController = TextEditingController(text: _codeImport);
-  //   _codeController = TextEditingController(text: _code);
-  //   super.initState();
-  // }
+  /// 执行代码的编辑控制器
+  TextEditingController _codeController;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,7 @@ class _ConsoleState extends State<Console> {
               children: [
                 Expanded(
                     flex: 2,
-                    child: _buildEditorItem(
+                    child: _buildEditorItemWidget(
                         context,
                         Text("import"),
                         CodeEditor(
@@ -52,7 +49,7 @@ class _ConsoleState extends State<Console> {
                         ))),
                 Expanded(
                     flex: 6,
-                    child: _buildEditorItem(
+                    child: _buildEditorItemWidget(
                         context,
                         Text("code"),
                         CodeEditor(
@@ -66,7 +63,7 @@ class _ConsoleState extends State<Console> {
               ],
             )),
             Expanded(
-                child: _buildEditorItem(
+                child: _buildEditorItemWidget(
                     context,
                     Text("运行结果"),
                     ListView(
@@ -80,7 +77,7 @@ class _ConsoleState extends State<Console> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  execute(appProvider);
+                  _executeCode(appProvider);
                 },
                 child: Padding(
                   padding:
@@ -101,7 +98,9 @@ class _ConsoleState extends State<Console> {
     );
   }
 
-  Widget _buildEditorItem(BuildContext context, Widget title, Widget child) {
+  /// 编辑框的背景widget
+  Widget _buildEditorItemWidget(
+      BuildContext context, Widget title, Widget child) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -118,7 +117,8 @@ class _ConsoleState extends State<Console> {
     );
   }
 
-  execute(AppProvider appProvider) async {
+  /// 执行代码
+  _executeCode(AppProvider appProvider) async {
     var response = await ApiStore.instance.execute(
         appProvider.code, appProvider.codeImport, appProvider.isRunMainThread);
     setState(() {

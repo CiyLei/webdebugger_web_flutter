@@ -7,6 +7,7 @@ import 'package:webdebugger_web_flutter/common/request_api.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 import 'dart:ui' as ui;
 
+/// 展示数据库页面的widget（就是一个html-iframe）
 class DB extends StatefulWidget {
   @override
   _DBState createState() => _DBState();

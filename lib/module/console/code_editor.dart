@@ -3,9 +3,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github-gist.dart';
 
+/// 代码编辑器的原理是在HighlightView上面套上一个透明的编辑器，改变内容时实时渲染
+///
+/// HighlightView：一个支持高亮的文本框
 class CodeEditor extends StatefulWidget {
-  TextEditingController textEditingController;
-  ValueChanged<String> onChange;
+  /// 编辑框控制器
+  final TextEditingController textEditingController;
+
+  /// 代表改变的回调
+  final ValueChanged<String> onChange;
 
   CodeEditor({Key key, this.textEditingController, this.onChange})
       : super(key: key);
@@ -22,6 +28,7 @@ class _CodeEditorState extends State<CodeEditor> {
 
   @override
   void initState() {
+    // 将背景色改为透明
     codeTheme['root'] =
         codeTheme['root'].copyWith(backgroundColor: Colors.transparent);
     super.initState();

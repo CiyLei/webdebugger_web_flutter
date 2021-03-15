@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class Selected extends StatelessWidget {
-  Widget child;
-  bool selected = false;
-  ValueChanged<bool> selectedCallback;
+/// 选中按钮的widget
+class SelectedButton extends StatelessWidget {
+  final Widget child;
 
-  Selected(
+  /// 是否选中
+  final bool selected;
+
+  /// 选中改变的回调
+  final ValueChanged<bool> selectedCallback;
+
+  SelectedButton(
       {Key key,
       @required this.child,
       @required this.selectedCallback,
-      this.selected})
+      @required this.selected})
       : super(key: key);
 
   @override

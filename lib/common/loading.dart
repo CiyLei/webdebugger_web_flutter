@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+/// 请求中的widget
 class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -8,6 +9,7 @@ class Loading extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // 圆形进度条
           CircularProgressIndicator(),
           Container(
             height: 10,
@@ -19,9 +21,13 @@ class Loading extends StatelessWidget {
   }
 }
 
+/// 请求错误的widget
 class LoadError extends StatelessWidget {
-  VoidCallback retryCallback;
-  VoidCallback errorCallback;
+  /// 重试的回调
+  final VoidCallback retryCallback;
+
+  /// 查看详细错误的回调
+  final VoidCallback errorCallback;
 
   LoadError(
       {Key key, @required this.retryCallback, @required this.errorCallback})

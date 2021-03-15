@@ -6,12 +6,22 @@ import 'package:webdebugger_web_flutter/model/children.dart';
 import 'package:webdebugger_web_flutter/module/interface/view_tree.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
+/// 展示节点列表控制器的widget
 class ViewTreeController extends StatefulWidget {
-  Children selectChildren;
-  ValueChanged<Children> onSelectedCallback;
-  bool selectedTouch = false;
-  ValueChanged<bool> onSelectedTouchCallback;
-  ValueChanged<List<Children>> onGetChildrenList;
+  /// 当前选中的节点
+  final Children selectChildren;
+
+  /// 改变选中节点的回调
+  final ValueChanged<Children> onSelectedCallback;
+
+  /// 是否选中的“触摸选择”
+  final bool selectedTouch;
+
+  /// 改变了选中“触摸选择”的回调
+  final ValueChanged<bool> onSelectedTouchCallback;
+
+  /// 获取了节点列表的回调
+  final ValueChanged<List<Children>> onGetChildrenList;
 
   ViewTreeController(
       {Key key,
@@ -27,6 +37,7 @@ class ViewTreeController extends StatefulWidget {
 }
 
 class _ViewTreeControllerState extends State<ViewTreeController> {
+  /// 获取节点列表的请求控制器
   RequestApiController _apiController;
 
   @override
@@ -43,6 +54,7 @@ class _ViewTreeControllerState extends State<ViewTreeController> {
           padding: const EdgeInsets.only(left: 8, top: 8),
           child: Row(
             children: [
+              // 刷新获取节点列表的按钮
               ElevatedButton(
                 onPressed: () {
                   _apiController.refresh();
@@ -52,7 +64,7 @@ class _ViewTreeControllerState extends State<ViewTreeController> {
               SizedBox(
                 width: 8,
               ),
-              Selected(
+              SelectedButton(
                   selected: widget.selectedTouch,
                   child: Text("触摸选择"),
                   selectedCallback: widget.onSelectedTouchCallback)
@@ -71,12 +83,17 @@ class _ViewTreeControllerState extends State<ViewTreeController> {
                 controller: _apiController,
                 apiFunction: ApiStore.instance.getViewTree,
                 dataWidgetBuilder: (context, response) {
+                  // 触发获取节点列表的回调
                   if (widget.onGetChildrenList != null) {
                     widget.onGetChildrenList(response.data);
                   }
+                  // 展示节点列表
                   return ViewTree(
+                    // 节点列表
                     childrenList: response.data,
+                    // 选中的节点
                     selectChildren: widget.selectChildren,
+                    // 选中节点的回调
                     onSelectedCallback: widget.onSelectedCallback,
                   );
                 }))

@@ -1,12 +1,11 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webdebugger_web_flutter/model/attributes.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
-Widget _rowBorder(BuildContext context, Widget child) => Container(
+/// 构建每行属性Widget的边框
+Widget _buildRowBorderWidget(BuildContext context, Widget child) => Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
           border:
@@ -14,9 +13,13 @@ Widget _rowBorder(BuildContext context, Widget child) => Container(
       child: child,
     );
 
+/// 展示属性列表的widget
 class AttributesView extends StatefulWidget {
-  Children children;
-  List<Attributes> attributesList;
+  /// 当前选中的节点
+  final Children children;
+
+  /// 节点的属性列表
+  final List<Attributes> attributesList;
 
   AttributesView(
       {Key key, @required this.children, @required this.attributesList})
@@ -31,6 +34,7 @@ class _AttributesState extends State<AttributesView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // 属性表格的标题
         DecoratedBox(
           decoration: BoxDecoration(
               color: Colors.grey,
@@ -40,7 +44,7 @@ class _AttributesState extends State<AttributesView> {
             children: [
               Expanded(
                   flex: 2,
-                  child: _rowBorder(
+                  child: _buildRowBorderWidget(
                       context,
                       Text(
                         "属性名称",
@@ -48,11 +52,11 @@ class _AttributesState extends State<AttributesView> {
                       ))),
               Expanded(
                   flex: 2,
-                  child: _rowBorder(context,
+                  child: _buildRowBorderWidget(context,
                       Text("属性值", style: TextStyle(color: Colors.white)))),
               Expanded(
                   flex: 3,
-                  child: _rowBorder(context,
+                  child: _buildRowBorderWidget(context,
                       Text("属性说明", style: TextStyle(color: Colors.white)))),
             ],
           ),
@@ -75,9 +79,13 @@ class _AttributesState extends State<AttributesView> {
   }
 }
 
+/// 每个属性的widget
 class AttributesViewItem extends StatefulWidget {
-  Children children;
-  Attributes attributes;
+  /// 选中的节点
+  final Children children;
+
+  /// 属性信息
+  final Attributes attributes;
 
   AttributesViewItem({Key key, this.children, this.attributes})
       : super(key: key);
@@ -87,20 +95,25 @@ class AttributesViewItem extends StatefulWidget {
 }
 
 class _AttributesViewItemState extends State<AttributesViewItem> {
+  /// 当属性的输入类型为输入框时，属性编辑框的控制器
   TextEditingController _textEditingController;
+
+  /// 当属性的输入类型为输入框时，属性编辑框的焦点
   FocusNode _inputFocusNode;
+
+  /// 当属性的输入类型为选择输入的时候，此刻选择的值
   String _selectValue;
 
-  /// 代表是个普通的属性
+  /// 属性类型：代表是个普通的属性
   final int _TYPE_NONE = 0;
 
-  /// 代表是个标签
+  /// 属性类型：代表是个标签
   final int _TYPE_LABEL = 1;
 
-  // 输入类型为：字符串输入
+  // 属性的输入类型为：字符串输入
   final int INPUT_TYPE_INPUT = 0;
 
-  // 输入类型为：选择输入
+  // 属性的输入类型为：选择输入
   final int INPUT_TYPE_SELECT = 1;
 
   @override
@@ -110,6 +123,7 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
     _textEditingController =
         TextEditingController(text: widget.attributes.value);
     _textEditingController.addListener(() {
+      // 当属性的输入类型为输入框时，输入框脱离焦点就去提交改变
       if (_inputFocusNode.hasFocus) {
         _changeValue(_textEditingController.text);
       }
@@ -117,6 +131,7 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
     super.initState();
   }
 
+  /// 掉接口改变属性的值
   void _changeValue(String value) {
     ApiStore.instance
         .setAttributes(widget.children.id, widget.attributes.attributes, value);
@@ -125,11 +140,12 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
   @override
   Widget build(BuildContext context) {
     return widget.attributes.type == _TYPE_LABEL
-        ? _buildAttributesTitle(context)
-        : _buildAttributesItem(context);
+        ? _buildAttributesTitleWidget(context)
+        : _buildAttributesItemWidget(context);
   }
 
-  Container _buildAttributesTitle(BuildContext context) {
+  /// 属性表格中的分割组
+  Container _buildAttributesTitleWidget(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
@@ -141,7 +157,8 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
     );
   }
 
-  Widget _buildAttributesItem(BuildContext context) {
+  /// 属性表格中的属性列表
+  Widget _buildAttributesItemWidget(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
           border: Border(
@@ -150,21 +167,25 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
         children: [
           Expanded(
               flex: 2,
-              child: _rowBorder(
+              child: _buildRowBorderWidget(
                   context, SelectableText(widget.attributes.attributes))),
           Expanded(
               flex: 2,
-              child: _rowBorder(context, _buildAttributesValue(context))),
+              child: _buildRowBorderWidget(
+                  context, _buildAttributesValueWidget(context))),
           Expanded(
               flex: 3,
-              child: _rowBorder(
+              child: _buildRowBorderWidget(
                   context, SelectableText(widget.attributes.description))),
         ],
       ),
     );
   }
 
-  Widget _buildAttributesValue(BuildContext context) {
+  /// 查看、编辑属性value的widget
+  Widget _buildAttributesValueWidget(BuildContext context) {
+    // isEdit：true为可以编辑的属性value，false：为不可编辑的属性value
+    // 当isEdit=true时，inputType：0为输入框编辑，1为选择框编辑
     if (widget.attributes.isEdit) {
       if (widget.attributes.inputType == INPUT_TYPE_INPUT) {
         return TextField(
@@ -183,6 +204,7 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
         return Row(
           children: [
             SelectableText(_selectValue),
+            // 通过Popup来进行选择
             PopupMenuButton(
                 onSelected: (select) {
                   _changeValue(select);

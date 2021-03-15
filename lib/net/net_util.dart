@@ -1,9 +1,13 @@
 import 'package:dio/dio.dart';
 
+/// 网络请求封装出
+///
+/// 目的让接口请求和具体的网络请求库分离
 class NetUtil {
   static Dio _dio = Dio();
 
-  static Future<dynamic> Get(String url, {Map<String, dynamic> params}) async {
+  /// get请求
+  static Future<dynamic> get(String url, {Map<String, dynamic> params}) async {
     Response response = await _dio.get(
       url,
       queryParameters: params,
@@ -11,7 +15,8 @@ class NetUtil {
     return response.data.toString();
   }
 
-  static Future<dynamic> Post(String url, {dynamic params}) async {
+  /// post请求
+  static Future<dynamic> post(String url, {dynamic params}) async {
     Response response = await _dio.post(url, data: params);
     return response.data;
   }
