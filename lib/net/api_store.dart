@@ -5,6 +5,7 @@ import 'package:webdebugger_web_flutter/model/attributes.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
+import 'package:webdebugger_web_flutter/model/media_info.dart';
 
 import 'net_util.dart';
 
@@ -34,6 +35,10 @@ class ApiStore {
 
   /// 根据数据库页面的端口，拼接数据库页面的地址
   static String dbUrl(int dbPort) => "http://${_hostName()}:$dbPort";
+
+  /// 拼接媒体地址
+  static String mediaUrl(int mediaPort, String address) =>
+      "http://${_hostName()}:$mediaPort/$address";
 
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
@@ -99,5 +104,36 @@ class ApiStore {
       "runOnMainThread": runOnMainThread
     });
     return BaseResponse.fromJson(json.decode(response), (data) => data);
+  }
+
+  /// 获取媒体列表
+  Future<BaseResponse<MediaInfo>> mediaList() async {
+    String response = await NetUtil.get("${_url()}/media/list");
+    return BaseResponse.fromJson(
+        json.decode(response), (data) => MediaInfo.fromJson(data));
+  }
+
+  /// 清空媒体列表
+  Future<BaseResponse<bool>> cleanMediaList() async {
+    String response = await NetUtil.get("${_url()}/media/clean");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  /// 截图申请
+  Future<BaseResponse<bool>> screenCapture() async {
+    String response = await NetUtil.get("${_url()}/media/screenCapture");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  /// 开始录屏
+  Future<BaseResponse<bool>> startScreenRecording() async {
+    String response = await NetUtil.get("${_url()}/media/startScreenRecording");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  /// 结束录屏
+  Future<BaseResponse<bool>> stopScreenRecording() async {
+    String response = await NetUtil.get("${_url()}/media/stopScreenRecording");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
   }
 }

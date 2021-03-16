@@ -9,6 +9,7 @@ import 'home.dart';
 import 'module.dart';
 import 'module/device/device.dart';
 import 'module/interface/interface.dart';
+import 'module/media/Media.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -24,7 +25,7 @@ final List<Module> moduleList = [
   Module('界面', Icons.account_tree, Interface()),
   Module('控制台', Icons.pest_control, Console()),
   Module('网络日志', Icons.network_check, NetWorkLog()),
-  Module('截屏/录屏', Icons.add_a_photo, SelectableText('截屏/录屏')),
+  Module('截屏/录屏', Icons.add_a_photo, Media()),
   Module('数据库', Icons.admin_panel_settings, DB()),
   Module('切换环境', Icons.account_balance, SelectableText('切换环境')),
   Module('日志', Icons.assignment, SelectableText('日志')),

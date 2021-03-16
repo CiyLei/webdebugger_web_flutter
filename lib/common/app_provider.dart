@@ -6,8 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
 import 'package:webdebugger_web_flutter/model/fps_info.dart';
+import 'package:webdebugger_web_flutter/model/media_info.dart';
 import 'package:webdebugger_web_flutter/model/net_work.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
+
+import 'flashing_point.dart';
 
 /// 全局的状态存储处
 class AppProvider with ChangeNotifier {
@@ -61,6 +64,19 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
   /// 网络请求列表
   List<NetWork> netWorkList = [];
 
+  /// 录屏控制器
+  FlashingPointController flashingPointController =
+      FlashingPointController(duration: Duration(milliseconds: 500));
+
+  /// “截屏/录屏”模块中的实时接收媒体信息的WebSocket
+  WebSocket mediaWebSocket;
+
+  /// 媒体地址的端口
+  int mediaPort;
+
+  /// 媒体列表
+  Set<String> mediaPathList = LinkedHashSet();
+
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
     if (deviceInfo != null && deviceInfo.success) {
@@ -81,6 +97,7 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
       _initDeviceWebSocket(webSocketPort);
       _initMonitorWebSocket(webSocketPort);
       _initNetWorkLogWebSocket(webSocketPort);
+      _initMediaWebSocket(webSocketPort);
     }
   }
 
@@ -95,9 +112,7 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
       FpsInfo fpsInfo = FpsInfo.fromJson(json.decode(event.data.toString()));
       // 第一次返回的数据有点问题，直接抛弃
       if (fpsInfo.fps <= 0) return;
-      fpsMap[DateTime
-          .now()
-          .millisecondsSinceEpoch] = fpsInfo;
+      fpsMap[DateTime.now().millisecondsSinceEpoch] = fpsInfo;
       // 只保存一定的数量
       if (fpsMap.length > 10) {
         fpsMap.remove(fpsMap.keys.first);
@@ -144,6 +159,39 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
     netWorkLogWebSocket.onClose.listen((event) {
       _initNetWorkLogWebSocket(webSocketPort);
     });
+  }
+
+  /// 初始化“截屏/录屏”模块中接收媒体信息的WebSocket
+  void _initMediaWebSocket(int webSocketPort) {
+    if (mediaWebSocket != null) {
+      mediaWebSocket.close();
+    }
+    mediaWebSocket =
+        WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/media/add");
+    mediaWebSocket.onMessage.listen((event) {
+      var mediaInfo = MediaInfo.fromJson(json.decode(event.data.toString()));
+      mediaPort = mediaInfo.port;
+      mediaPathList.addAll(mediaInfo.list);
+      notifyListeners();
+    });
+    // 如果断开了，直接尝试重连
+    mediaWebSocket.onClose.listen((event) {
+      _initMediaWebSocket(webSocketPort);
+    });
+  }
+
+  /// 重置媒体列表
+  void resetMediaList(MediaInfo mediaInfo) {
+    mediaPort = mediaInfo.port;
+    mediaPathList.clear();
+    mediaPathList.addAll(mediaInfo.list);
+    notifyListeners();
+  }
+
+  /// 清空媒体列表
+  void clearMediaList() {
+    mediaPathList.clear();
+    notifyListeners();
   }
 
   /// 清除网络日志
