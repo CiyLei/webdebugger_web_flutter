@@ -9,7 +9,7 @@ import 'home.dart';
 import 'module.dart';
 import 'module/device/device.dart';
 import 'module/interface/interface.dart';
-import 'module/media/Media.dart';
+import 'module/media/media.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
