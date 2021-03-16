@@ -201,26 +201,17 @@ class _AttributesViewItemState extends State<AttributesViewItem> {
                   borderSide: BorderSide(color: Colors.grey, width: 2))),
         );
       } else {
-        return Row(
-          children: [
-            SelectableText(_selectValue),
-            // 通过Popup来进行选择
-            PopupMenuButton(
-                onSelected: (select) {
-                  _changeValue(select);
-                  setState(() {
-                    _selectValue = select;
-                  });
-                },
-                offset: Offset(0, 40),
-                padding: EdgeInsets.zero,
-                itemBuilder: (context) => widget.attributes.selectOptions
-                    .map((e) => PopupMenuItem<String>(
-                          value: e,
-                          child: Text(e),
-                        ))
-                    .toList())
-          ],
+        return DropdownButton<String>(
+          value: _selectValue ?? "",
+          items: widget.attributes.selectOptions
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (value) {
+            _changeValue(value);
+            setState(() {
+              _selectValue = value;
+            });
+          },
         );
       }
     } else {
