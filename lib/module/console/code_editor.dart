@@ -23,6 +23,9 @@ class CodeEditor extends StatelessWidget {
       value.copyWith(
           fontWeight: FontWeight.normal, fontStyle: FontStyle.normal)));
 
+  /// 滚动控制器
+  ScrollController _scrollController = ScrollController();
+
   CodeEditor(
       {Key key,
       this.textEditingController,
@@ -37,8 +40,10 @@ class CodeEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
+        controller: _scrollController,
         isAlwaysShown: true,
         child: ListView(
+          controller: _scrollController,
           children: [
             Stack(
               children: [
