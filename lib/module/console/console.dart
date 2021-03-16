@@ -40,6 +40,7 @@ class _ConsoleState extends State<Console> {
                         context,
                         Text("import"),
                         CodeEditor(
+                          isHighlight: appProvider.isHighlight,
                           textEditingController: _importController,
                           onChange: (value) {
                             setState(() {
@@ -53,6 +54,7 @@ class _ConsoleState extends State<Console> {
                         context,
                         Text("code"),
                         CodeEditor(
+                          isHighlight: appProvider.isHighlight,
                           textEditingController: _codeController,
                           onChange: (value) {
                             setState(() {
@@ -91,7 +93,18 @@ class _ConsoleState extends State<Console> {
                     appProvider.isRunMainThread = value;
                   });
                 }),
-            Text("运行在主线程")
+            Text("运行在主线程"),
+            SizedBox(
+              width: 8,
+            ),
+            Checkbox(
+                value: appProvider.isHighlight,
+                onChanged: (value) {
+                  setState(() {
+                    appProvider.isHighlight = value;
+                  });
+                }),
+            Text("高亮语法（实验）"),
           ],
         )
       ],

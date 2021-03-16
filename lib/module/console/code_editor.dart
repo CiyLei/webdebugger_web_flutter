@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/github-gist.dart';
+import 'package:flutter_highlight/themes/github.dart';
+import 'package:flutter_highlight/themes/idea.dart';
 
 /// 代码编辑器的原理是在HighlightView上面套上一个透明的编辑器，改变内容时实时渲染
 ///
 /// HighlightView：一个支持高亮的文本框
-class CodeEditor extends StatefulWidget {
+class CodeEditor extends StatelessWidget {
   /// 编辑框控制器
   final TextEditingController textEditingController;
 
   /// 代表改变的回调
   final ValueChanged<String> onChange;
 
-  CodeEditor({Key key, this.textEditingController, this.onChange})
-      : super(key: key);
+  /// 是否高亮语法
+  final isHighlight;
 
-  @override
-  _CodeEditorState createState() => _CodeEditorState();
-}
-
-class _CodeEditorState extends State<CodeEditor> {
-  var codeTheme = githubGistTheme.map((key, value) => MapEntry(
+  /// 高亮语法主题
+  var codeTheme = ideaTheme.map((key, value) => MapEntry(
       key,
       value.copyWith(
           fontWeight: FontWeight.normal, fontStyle: FontStyle.normal)));
 
-  @override
-  void initState() {
+  CodeEditor(
+      {Key key,
+      this.textEditingController,
+      this.onChange,
+      this.isHighlight = false})
+      : super(key: key) {
     // 将背景色改为透明
     codeTheme['root'] =
         codeTheme['root'].copyWith(backgroundColor: Colors.transparent);
-    super.initState();
   }
 
   @override
@@ -42,15 +42,19 @@ class _CodeEditorState extends State<CodeEditor> {
           children: [
             Stack(
               children: [
-                HighlightView(widget.textEditingController.text,
-                    language: 'java',
-                    theme: codeTheme,
-                    padding: EdgeInsets.all(0),
-                    textStyle: TextStyle(fontSize: 16)),
+                isHighlight
+                    ? HighlightView(textEditingController.text,
+                        language: 'java',
+                        theme: codeTheme,
+                        padding: EdgeInsets.all(0),
+                        textStyle: TextStyle(fontSize: 16))
+                    : SizedBox(),
                 TextField(
-                  controller: widget.textEditingController,
-                  onChanged: widget.onChange,
-                  style: TextStyle(fontSize: 16, color: Colors.transparent),
+                  controller: textEditingController,
+                  onChanged: onChange,
+                  style: isHighlight
+                      ? TextStyle(fontSize: 16, color: Colors.transparent)
+                      : TextStyle(fontSize: 16),
                   decoration: null,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,

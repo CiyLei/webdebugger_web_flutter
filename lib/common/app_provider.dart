@@ -49,6 +49,9 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
   /// “控制台”模块，默认的返回结果
   var result = "";
 
+  /// 是否高亮语法
+  bool isHighlight = false;
+
   /// “控制台”模块，控制代码是否运行在主线程中
   var isRunMainThread = true;
 
@@ -92,7 +95,9 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
       FpsInfo fpsInfo = FpsInfo.fromJson(json.decode(event.data.toString()));
       // 第一次返回的数据有点问题，直接抛弃
       if (fpsInfo.fps <= 0) return;
-      fpsMap[DateTime.now().millisecondsSinceEpoch] = fpsInfo;
+      fpsMap[DateTime
+          .now()
+          .millisecondsSinceEpoch] = fpsInfo;
       // 只保存一定的数量
       if (fpsMap.length > 10) {
         fpsMap.remove(fpsMap.keys.first);
