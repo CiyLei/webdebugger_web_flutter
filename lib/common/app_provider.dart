@@ -77,6 +77,15 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
   /// 媒体列表
   Set<String> mediaPathList = LinkedHashSet();
 
+  /// “日志”模块的日志是否滚动置底
+  bool isAlwaysScrollToEnd = true;
+
+  /// “日志”模块的实时接收日志的WebSocket
+  WebSocket logcatWebSocket;
+
+  /// 日志
+  String logcat = "";
+
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
     if (deviceInfo != null && deviceInfo.success) {
@@ -98,6 +107,7 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
       _initMonitorWebSocket(webSocketPort);
       _initNetWorkLogWebSocket(webSocketPort);
       _initMediaWebSocket(webSocketPort);
+      _initLogcatWebSocket(webSocketPort);
     }
   }
 
@@ -198,5 +208,22 @@ Toast.makeText(getContext(), "测试吐司", Toast.LENGTH_SHORT).show();
   void clearNetWorkLog() {
     netWorkList.clear();
     notifyListeners();
+  }
+
+  /// 初始化“日志”模块中接收日志的WebSocket
+  void _initLogcatWebSocket(int webSocketPort) {
+    if (logcatWebSocket != null) {
+      logcatWebSocket.close();
+    }
+    logcatWebSocket =
+        WebSocket(ApiStore.webSocketUrl(webSocketPort) + "/logcat");
+    logcatWebSocket.onMessage.listen((event) {
+      logcat += "${event.data.toString()}\n";
+      notifyListeners();
+    });
+    // 如果断开了，直接尝试重连
+    logcatWebSocket.onClose.listen((event) {
+      _initLogcatWebSocket(webSocketPort);
+    });
   }
 }

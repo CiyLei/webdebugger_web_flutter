@@ -173,7 +173,7 @@ class MemoryChart extends StatelessWidget {
                   }),
               leftTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 30,
+                reservedSize: 40,
                 interval: (maxY - minY) / 5,
                 getTitles: (value) => value.toInt().toString(),
               ),

@@ -10,6 +10,7 @@ import 'module.dart';
 import 'module/device/device.dart';
 import 'module/env/environment.dart';
 import 'module/interface/interface.dart';
+import 'module/logcat/log_cat.dart';
 import 'module/media/media.dart';
 
 void main() {
@@ -29,7 +30,7 @@ final List<Module> moduleList = [
   Module('截屏/录屏', Icons.add_a_photo, Media()),
   Module('数据库', Icons.admin_panel_settings, DB()),
   Module('切换环境', Icons.account_balance, Environment()),
-  Module('日志', Icons.assignment, SelectableText('日志')),
+  Module('日志', Icons.assignment, LogCat()),
   Module('API列表', Icons.list_alt, SelectableText('API列表')),
   Module('安装APK', Icons.adb, SelectableText('安装APK')),
 ];
