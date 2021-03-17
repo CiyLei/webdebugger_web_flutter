@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -76,7 +77,10 @@ class _ConsoleState extends State<Console> {
                     )))
           ],
         )),
-        Row(
+        Wrap(
+          direction: Axis.horizontal,
+          spacing: 8,
+          runSpacing: 8,
           children: [
             ElevatedButton(
                 onPressed: () {
@@ -87,25 +91,32 @@ class _ConsoleState extends State<Console> {
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
                   child: Text("运行"),
                 )),
-            Checkbox(
-                value: consoleProvider.isRunMainThread,
-                onChanged: (value) {
-                  setState(() {
-                    consoleProvider.isRunMainThread = value;
-                  });
-                }),
-            Text("运行在主线程"),
-            SizedBox(
-              width: 8,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Checkbox(
+                    value: consoleProvider.isRunMainThread,
+                    onChanged: (value) {
+                      setState(() {
+                        consoleProvider.isRunMainThread = value;
+                      });
+                    }),
+                Text("运行在主线程"),
+              ],
             ),
-            Checkbox(
-                value: consoleProvider.isHighlight,
-                onChanged: (value) {
-                  setState(() {
-                    consoleProvider.isHighlight = value;
-                  });
-                }),
-            Text("高亮语法（实验）"),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Checkbox(
+                    value: consoleProvider.isHighlight,
+                    onChanged: (value) {
+                      setState(() {
+                        consoleProvider.isHighlight = value;
+                      });
+                    }),
+                Text("高亮语法（实验）"),
+              ],
+            )
           ],
         )
       ],
