@@ -104,9 +104,7 @@ class _RequestApiState<T> extends State<RequestApi> {
       return Loading();
     } else if (responseState.netState == NetState.success) {
       // 请求成功，展示指定的widget
-      return Center(
-        child: widget.dataWidgetBuilder(context, responseState.response),
-      );
+      return widget.dataWidgetBuilder(context, responseState.response);
     } else {
       // 请求失败，展示请求失败的widget
       return LoadError(retryCallback: () {

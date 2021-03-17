@@ -5,6 +5,7 @@ import 'package:webdebugger_web_flutter/model/attributes.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
+import 'package:webdebugger_web_flutter/model/environment_info.dart';
 import 'package:webdebugger_web_flutter/model/media_info.dart';
 
 import 'net_util.dart';
@@ -134,6 +135,20 @@ class ApiStore {
   /// 结束录屏
   Future<BaseResponse<bool>> stopScreenRecording() async {
     String response = await NetUtil.get("${_url()}/media/stopScreenRecording");
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  /// 获取环境
+  Future<BaseResponse<EnvironmentInfo>> retrofitInfo() async {
+    String response = await NetUtil.get("${_url()}/retrofit/info");
+    return BaseResponse.fromJson(
+        json.decode(response), (data) => EnvironmentInfo.fromJson(data));
+  }
+
+  /// 设置环境地址
+  Future<BaseResponse<bool>> retrofitEdit(String newUrl) async {
+    String response = await NetUtil.post("${_url()}/retrofit/edit",
+        params: {"newUrl": newUrl});
     return BaseResponse.fromJson(json.decode(response), (data) => true);
   }
 }
