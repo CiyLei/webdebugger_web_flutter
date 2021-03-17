@@ -43,36 +43,40 @@ class Webdebugger extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WebDebugger',
-      home: LayoutBuilder(
-        builder: (context, constraints) {
-          // 判断设备宽度，决定默认是否展开模块列表
-          return ChangeNotifierProvider(
-            create: (_) => HomeProvider(moduleList.first,
-                isExpand: constraints.maxWidth > 600),
-            child: RequestApi(
-                apiFunction: ApiStore.instance.getDeviceInfo,
-                dataWidgetBuilder: (context, response) =>
-                    MultiProvider(providers: [
-                      // 设备模块的状态存储
-                      ChangeNotifierProvider(
-                          create: (_) => DeviceProvider(response.data)),
-                      // 界面模块的状态存储
-                      ChangeNotifierProvider(
-                          create: (_) => ViewProvider(response.data)),
-                      // 控制台模块的状态存储
-                      ChangeNotifierProvider(create: (_) => ConsoleProvider()),
-                      // 网络日志模块的状态存储
-                      ChangeNotifierProvider(
-                          create: (_) => NetWorkProvider(response.data)),
-                      // 截屏录屏模块的状态存储
-                      ChangeNotifierProvider(
-                          create: (_) => MediaProvider(response.data)),
-                      // 日志模块的状态存储
-                      ChangeNotifierProvider(
-                          create: (_) => LogcatProvider(response.data)),
-                    ], child: Home())),
-          );
-        },
+      home: DefaultTextStyle(
+        style: TextStyle(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // 判断设备宽度，决定默认是否展开模块列表
+            return ChangeNotifierProvider(
+              create: (_) => HomeProvider(moduleList.first,
+                  isExpand: constraints.maxWidth > 600),
+              child: RequestApi(
+                  apiFunction: ApiStore.instance.getDeviceInfo,
+                  dataWidgetBuilder: (context, response) =>
+                      MultiProvider(providers: [
+                        // 设备模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => DeviceProvider(response.data)),
+                        // 界面模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => ViewProvider(response.data)),
+                        // 控制台模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => ConsoleProvider()),
+                        // 网络日志模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => NetWorkProvider(response.data)),
+                        // 截屏录屏模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => MediaProvider(response.data)),
+                        // 日志模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => LogcatProvider(response.data)),
+                      ], child: Home())),
+            );
+          },
+        ),
       ),
     );
   }
