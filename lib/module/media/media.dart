@@ -79,43 +79,47 @@ class MediaGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appProvider = context.watch<AppProvider>();
-    return GridView.extent(
-      maxCrossAxisExtent: 400,
-      mainAxisSpacing: 20,
-      crossAxisSpacing: 20,
-      childAspectRatio: 1.5,
-      children: appProvider.mediaPathList
-          .map((e) {
-            var url = ApiStore.mediaUrl(appProvider.mediaPort, e);
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: InkWell(
-                      onTap: () {
-                        js.context.callMethod('open',
-                            [ApiStore.mediaUrl(appProvider.mediaPort, e)]);
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(8),
-                        decoration:
-                            BoxDecoration(color: Colors.grey.withAlpha(50)),
-                        child: url.endsWith("mp4")
-                            ? MediaVideoPlayer(url: url)
-                            : Image.network(
-                                ApiStore.mediaUrl(appProvider.mediaPort, e)),
-                      )),
-                ),
-                SizedBox(height: 8),
-                SelectableText(e)
-              ],
-            );
-          })
-          .toList()
-          .reversed
-          .toList(),
-    );
+    return appProvider.mediaPathList.isEmpty
+        ? Center(child: Text("无媒体文件"))
+        : GridView.extent(
+            maxCrossAxisExtent: 400,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+            childAspectRatio: 1.5,
+            children: appProvider.mediaPathList
+                .map((e) {
+                  var url = ApiStore.mediaUrl(appProvider.mediaPort, e);
+                  return Column(
+                    key: ValueKey(e),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                            onTap: () {
+                              js.context.callMethod('open', [
+                                ApiStore.mediaUrl(appProvider.mediaPort, e)
+                              ]);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.withAlpha(50)),
+                              child: url.endsWith("mp4")
+                                  ? MediaVideoPlayer(url: url)
+                                  : Image.network(ApiStore.mediaUrl(
+                                      appProvider.mediaPort, e)),
+                            )),
+                      ),
+                      SizedBox(height: 8),
+                      SelectableText(e)
+                    ],
+                  );
+                })
+                .toList()
+                .reversed
+                .toList(),
+          );
   }
 }
 

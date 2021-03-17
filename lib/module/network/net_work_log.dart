@@ -65,7 +65,10 @@ class _NetWorkLogState extends State<NetWorkLog> {
                       child: ListView(
                         controller: _scrollController,
                         children: appProvider.netWorkList
-                            .map((e) => NetWorkLogItem(netWork: e))
+                            .map((e) => NetWorkLogItem(
+                                  key: ObjectKey(e),
+                                  netWork: e,
+                                ))
                             .toList(),
                       )))
             ],
