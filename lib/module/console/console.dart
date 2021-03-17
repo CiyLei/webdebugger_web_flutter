@@ -1,7 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/console_provider.dart';
 import 'package:webdebugger_web_flutter/module/console/code_editor.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
@@ -20,10 +20,11 @@ class _ConsoleState extends State<Console> {
 
   @override
   Widget build(BuildContext context) {
-    var appProvider = context.read<AppProvider>();
+    var consoleProvider = context.read<ConsoleProvider>();
     if (_importController == null) {
-      _importController = TextEditingController(text: appProvider.codeImport);
-      _codeController = TextEditingController(text: appProvider.code);
+      _importController =
+          TextEditingController(text: consoleProvider.codeImport);
+      _codeController = TextEditingController(text: consoleProvider.code);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,11 +41,11 @@ class _ConsoleState extends State<Console> {
                         context,
                         Text("import"),
                         CodeEditor(
-                          isHighlight: appProvider.isHighlight,
+                          isHighlight: consoleProvider.isHighlight,
                           textEditingController: _importController,
                           onChange: (value) {
                             setState(() {
-                              appProvider.codeImport = value;
+                              consoleProvider.codeImport = value;
                             });
                           },
                         ))),
@@ -54,11 +55,11 @@ class _ConsoleState extends State<Console> {
                         context,
                         Text("code"),
                         CodeEditor(
-                          isHighlight: appProvider.isHighlight,
+                          isHighlight: consoleProvider.isHighlight,
                           textEditingController: _codeController,
                           onChange: (value) {
                             setState(() {
-                              appProvider.code = value;
+                              consoleProvider.code = value;
                             });
                           },
                         )))
@@ -70,7 +71,7 @@ class _ConsoleState extends State<Console> {
                     Text("运行结果"),
                     ListView(
                       children: [
-                        SelectableText(context.watch<AppProvider>().result)
+                        SelectableText(context.watch<ConsoleProvider>().result)
                       ],
                     )))
           ],
@@ -79,7 +80,7 @@ class _ConsoleState extends State<Console> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  _executeCode(appProvider);
+                  _executeCode(consoleProvider);
                 },
                 child: Padding(
                   padding:
@@ -87,10 +88,10 @@ class _ConsoleState extends State<Console> {
                   child: Text("运行"),
                 )),
             Checkbox(
-                value: appProvider.isRunMainThread,
+                value: consoleProvider.isRunMainThread,
                 onChanged: (value) {
                   setState(() {
-                    appProvider.isRunMainThread = value;
+                    consoleProvider.isRunMainThread = value;
                   });
                 }),
             Text("运行在主线程"),
@@ -98,10 +99,10 @@ class _ConsoleState extends State<Console> {
               width: 8,
             ),
             Checkbox(
-                value: appProvider.isHighlight,
+                value: consoleProvider.isHighlight,
                 onChanged: (value) {
                   setState(() {
-                    appProvider.isHighlight = value;
+                    consoleProvider.isHighlight = value;
                   });
                 }),
             Text("高亮语法（实验）"),
@@ -131,11 +132,11 @@ class _ConsoleState extends State<Console> {
   }
 
   /// 执行代码
-  _executeCode(AppProvider appProvider) async {
-    var response = await ApiStore.instance.execute(
-        appProvider.code, appProvider.codeImport, appProvider.isRunMainThread);
+  _executeCode(ConsoleProvider consoleProvider) async {
+    var response = await ApiStore.instance.execute(consoleProvider.code,
+        consoleProvider.codeImport, consoleProvider.isRunMainThread);
     setState(() {
-      appProvider.result = response.data;
+      consoleProvider.result = response.data;
     });
   }
 }

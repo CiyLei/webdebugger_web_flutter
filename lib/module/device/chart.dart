@@ -2,14 +2,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/device_provider.dart';
 import 'package:webdebugger_web_flutter/utils/time_util.dart';
 
 /// pfs图表
 class FpsChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var fpsMap = context.watch<AppProvider>().fpsMap.entries.toList();
+    var fpsMap = context.watch<DeviceProvider>().fpsMap.entries.toList();
     List<FlSpot> spotList = [];
     // 计算fps的最大值和最小值，决定图表的上线限
     // 上限：max*1.1，下限：min*0.9
@@ -84,7 +84,7 @@ class FpsChart extends StatelessWidget {
 class MemoryChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var fpsMap = context.watch<AppProvider>().fpsMap.entries.toList();
+    var fpsMap = context.watch<DeviceProvider>().fpsMap.entries.toList();
     List<FlSpot> totalPssList = [];
     List<FlSpot> totalPrivateDirtyList = [];
     // 计算内存占用的最大值和最小值，决定图表的上线限

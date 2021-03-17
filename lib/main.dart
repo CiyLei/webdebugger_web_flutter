@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/device_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/logcat_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/media_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/view_provider.dart';
+import 'package:webdebugger_web_flutter/common/request_api.dart';
 import 'package:webdebugger_web_flutter/module/console/console.dart';
 import 'package:webdebugger_web_flutter/module/db/db.dart';
 import 'package:webdebugger_web_flutter/module/network/net_work_log.dart';
+import 'package:webdebugger_web_flutter/net/api_store.dart';
 
+import 'common/provider/console_provider.dart';
+import 'common/provider/net_provider.dart';
 import 'home.dart';
 import 'module.dart';
 import 'module/device/device.dart';
 import 'module/env/environment.dart';
-import 'module/interface/interface.dart';
+import 'module/view/interface.dart';
 import 'module/logcat/log_cat.dart';
 import 'module/media/media.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (_) => AppProvider(),
-    lazy: false,
-    child: Webdebugger(),
-  ));
+  runApp(Webdebugger());
 }
 
 /// 模块信息
@@ -46,7 +49,28 @@ class Webdebugger extends StatelessWidget {
           return ChangeNotifierProvider(
             create: (_) => HomeProvider(moduleList.first,
                 isExpand: constraints.maxWidth > 600),
-            child: Home(),
+            child: RequestApi(
+                apiFunction: ApiStore.instance.getDeviceInfo,
+                dataWidgetBuilder: (context, response) =>
+                    MultiProvider(providers: [
+                      // 设备模块的状态存储
+                      ChangeNotifierProvider(
+                          create: (_) => DeviceProvider(response.data)),
+                      // 界面模块的状态存储
+                      ChangeNotifierProvider(
+                          create: (_) => ViewProvider(response.data)),
+                      // 控制台模块的状态存储
+                      ChangeNotifierProvider(create: (_) => ConsoleProvider()),
+                      // 网络日志模块的状态存储
+                      ChangeNotifierProvider(
+                          create: (_) => NetWorkProvider(response.data)),
+                      // 截屏录屏模块的状态存储
+                      ChangeNotifierProvider(
+                          create: (_) => MediaProvider(response.data)),
+                      // 日志模块的状态存储
+                      ChangeNotifierProvider(
+                          create: (_) => LogcatProvider(response.data)),
+                    ], child: Home())),
           );
         },
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/net_provider.dart';
 
 import 'net_work_log_item.dart';
 
@@ -27,7 +27,7 @@ class _NetWorkLogState extends State<NetWorkLog> {
 
   @override
   Widget build(BuildContext context) {
-    var appProvider = context.watch<AppProvider>();
+    var netWorkProvider = context.watch<NetWorkProvider>();
     return Stack(
       children: [
         DecoratedBox(
@@ -64,7 +64,7 @@ class _NetWorkLogState extends State<NetWorkLog> {
                       isAlwaysShown: true,
                       child: ListView(
                         controller: _scrollController,
-                        children: appProvider.netWorkList
+                        children: netWorkProvider.netWorkList
                             .map((e) => NetWorkLogItem(
                                   key: ObjectKey(e),
                                   netWork: e,
@@ -79,7 +79,7 @@ class _NetWorkLogState extends State<NetWorkLog> {
             padding: const EdgeInsets.all(16),
             child: FloatingActionButton(
               child: Text("清空"),
-              onPressed: appProvider.clearNetWorkLog,
+              onPressed: netWorkProvider.clearNetWorkLog,
             ),
           ),
           alignment: Alignment.bottomRight,

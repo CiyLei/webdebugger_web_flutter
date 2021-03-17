@@ -1,7 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
-import 'package:webdebugger_web_flutter/common/request_api.dart';
+import 'package:webdebugger_web_flutter/common/provider/device_provider.dart';
 import 'package:webdebugger_web_flutter/model/device_info.dart';
 
 import 'chart.dart';
@@ -15,16 +14,12 @@ class Device extends StatefulWidget {
 class _DeviceState extends State<Device> {
   @override
   Widget build(BuildContext context) {
-    return RequestApi(
-        apiFunction: context.read<AppProvider>().getDeviceInfo,
-        dataWidgetBuilder: (context, response) {
-          return _buildDeviceWidget(context);
-        });
+    return _buildDeviceWidget(context);
   }
 
   /// 设备信息的widget
   Widget _buildDeviceWidget(BuildContext context) {
-    var appProvider = context.read<AppProvider>();
+    var deviceProvider = context.read<DeviceProvider>();
     return CustomScrollView(
         primary: false,
         // 因为设备信息的接口中返回的设备信息是按组来的
@@ -32,7 +27,7 @@ class _DeviceState extends State<Device> {
         // 但是除了展示接口中的设备信息，我们还需要展示fps和内存信息
         // 所以要多一组，这就是为什么要+1
         slivers: List.generate(
-          (appProvider.deviceInfo.data.groups.length + 1) * 2,
+          (deviceProvider.deviceInfo.groups.length + 1) * 2,
           (index) {
             // 前2行展示“fps和内存信息”的组标题和内容
             if (index == 0) {
@@ -61,7 +56,7 @@ class _DeviceState extends State<Device> {
               );
             }
             // 计算当前该展示哪组
-            var group = appProvider.deviceInfo.data.groups[(index - 2) ~/ 2];
+            var group = deviceProvider.deviceInfo.groups[(index - 2) ~/ 2];
             if (index % 2 == 0) {
               // 展示组的标题
               return SliverToBoxAdapter(

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:webdebugger_web_flutter/common/request_api.dart';
 import 'package:webdebugger_web_flutter/common/selected.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
-import 'package:webdebugger_web_flutter/module/interface/view_tree.dart';
+import 'package:webdebugger_web_flutter/module/view/view_tree.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
 /// 展示节点列表控制器的widget

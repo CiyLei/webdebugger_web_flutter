@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_highlight/themes/idea.dart';
 
 /// 代码编辑器的原理是在HighlightView上面套上一个透明的编辑器，改变内容时实时渲染

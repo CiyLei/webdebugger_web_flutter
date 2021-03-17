@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
 import 'package:webdebugger_web_flutter/common/drag_panel.dart';
+import 'package:webdebugger_web_flutter/common/provider/view_provider.dart';
 import 'package:webdebugger_web_flutter/common/request_api.dart';
 import 'package:webdebugger_web_flutter/model/attributes.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
-import 'package:webdebugger_web_flutter/module/interface/attributes_view.dart';
-import 'package:webdebugger_web_flutter/module/interface/view_tree_controller.dart';
+import 'package:webdebugger_web_flutter/module/view/attributes_view.dart';
+import 'package:webdebugger_web_flutter/module/view/view_tree_controller.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 
 /// “界面”模块
@@ -51,9 +51,9 @@ class _InterfaceState extends State<Interface> {
 
   @override
   Widget build(BuildContext context) {
-    var appProvider = context.watch<AppProvider>();
+    var viewProvider = context.watch<ViewProvider>();
     // 根据选中的节点id，找到对应的节点
-    var children = _findChildren(appProvider.selectViewId, _childrenList);
+    var children = _findChildren(viewProvider.selectViewId, _childrenList);
     // 如果当前选中的节点存在，且与上一个选中的节点不一致的话，刷新状态，重新获取属性列表
     if (children != null &&
         ((_selectChildren != null && _selectChildren.id != children.id) ||
@@ -97,7 +97,7 @@ class _InterfaceState extends State<Interface> {
                 // 开启“触摸选择”
                 _selectedTouch = true;
                 _selectChildren = children;
-                appProvider.selectViewId = children.id;
+                viewProvider.selectViewId = children.id;
                 // 重新获取view的属性列表
                 _controller.refresh();
                 ApiStore.instance.selectView(_selectChildren.id);

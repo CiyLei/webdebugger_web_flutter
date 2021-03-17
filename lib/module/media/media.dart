@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:webdebugger_web_flutter/common/app_provider.dart';
 import 'package:webdebugger_web_flutter/common/flashing_point.dart';
-import 'package:webdebugger_web_flutter/common/request_api.dart';
+import 'package:webdebugger_web_flutter/common/provider/media_provider.dart';
 import 'package:webdebugger_web_flutter/net/api_store.dart';
 import 'dart:js' as js;
 
@@ -16,7 +15,7 @@ class Media extends StatefulWidget {
 class _MediaState extends State<Media> {
   @override
   Widget build(BuildContext context) {
-    var appProvider = context.read<AppProvider>();
+    var mediaProvider = context.read<MediaProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -28,11 +27,11 @@ class _MediaState extends State<Media> {
                 onPressed: ApiStore.instance.screenCapture, child: Text("截屏"))),
             _buildButtonWidget(ElevatedButton(
               onPressed: () {
-                if (appProvider.flashingPointController.isFlashing) {
-                  appProvider.flashingPointController.stopFlash();
+                if (mediaProvider.flashingPointController.isFlashing) {
+                  mediaProvider.flashingPointController.stopFlash();
                   ApiStore.instance.stopScreenRecording();
                 } else {
-                  appProvider.flashingPointController.startFlash();
+                  mediaProvider.flashingPointController.startFlash();
                   ApiStore.instance.startScreenRecording();
                 }
                 setState(() {});
@@ -43,10 +42,10 @@ class _MediaState extends State<Media> {
                   FlashingPoint(
                     radius: 3,
                     flashingPointController:
-                        appProvider.flashingPointController,
+                        mediaProvider.flashingPointController,
                   ),
                   SizedBox(width: 6),
-                  Text(appProvider.flashingPointController.isFlashing
+                  Text(mediaProvider.flashingPointController.isFlashing
                       ? "结束录屏"
                       : "开始录屏")
                 ],
@@ -55,7 +54,7 @@ class _MediaState extends State<Media> {
             _buildButtonWidget(ElevatedButton(
                 onPressed: () {
                   ApiStore.instance.cleanMediaList();
-                  appProvider.clearMediaList();
+                  mediaProvider.clearMediaList();
                 },
                 child: Text("清空"))),
           ],
@@ -78,17 +77,17 @@ class _MediaState extends State<Media> {
 class MediaGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appProvider = context.watch<AppProvider>();
-    return appProvider.mediaPathList.isEmpty
+    var mediaProvider = context.watch<MediaProvider>();
+    return mediaProvider.mediaPathList.isEmpty
         ? Center(child: Text("无媒体文件"))
         : GridView.extent(
             maxCrossAxisExtent: 400,
             mainAxisSpacing: 20,
             crossAxisSpacing: 20,
             childAspectRatio: 1.5,
-            children: appProvider.mediaPathList
+            children: mediaProvider.mediaPathList
                 .map((e) {
-                  var url = ApiStore.mediaUrl(appProvider.mediaPort, e);
+                  var url = ApiStore.mediaUrl(mediaProvider.mediaPort, e);
                   return Column(
                     key: ValueKey(e),
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -97,7 +96,7 @@ class MediaGrid extends StatelessWidget {
                         child: InkWell(
                             onTap: () {
                               js.context.callMethod('open', [
-                                ApiStore.mediaUrl(appProvider.mediaPort, e)
+                                ApiStore.mediaUrl(mediaProvider.mediaPort, e)
                               ]);
                             },
                             child: Container(
@@ -108,7 +107,7 @@ class MediaGrid extends StatelessWidget {
                               child: url.endsWith("mp4")
                                   ? MediaVideoPlayer(url: url)
                                   : Image.network(ApiStore.mediaUrl(
-                                      appProvider.mediaPort, e)),
+                                      mediaProvider.mediaPort, e)),
                             )),
                       ),
                       SizedBox(height: 8),
