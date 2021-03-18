@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:dio/dio.dart';
 
 /// 网络请求封装出
@@ -18,6 +20,18 @@ class NetUtil {
   /// post请求
   static Future<dynamic> post(String url, {dynamic params}) async {
     Response response = await _dio.post(url, data: params);
+    return response.data;
+  }
+
+  /// 上传文件
+  static Future<dynamic> upload(String url, File file) async {
+    FileReader fileReader = FileReader();
+    fileReader.readAsArrayBuffer(file);
+    var result = await fileReader.onLoad.first
+        .then((value) => fileReader.result) as List<int>;
+    var data = FormData.fromMap(
+        {"file": MultipartFile.fromBytes(result, filename: file.name)});
+    Response response = await _dio.post(url, data: data);
     return response.data;
   }
 }

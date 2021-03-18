@@ -169,4 +169,18 @@ class ApiStore {
         params: {"methodCode": methodCode, "responseContent": mock});
     return BaseResponse.fromJson(json.decode(response), (data) => true);
   }
+
+  /// 通过url安装apk
+  Future<BaseResponse<bool>> installFromUrl(String url) async {
+    String response = await NetUtil.get("${_url()}/install/installFromUrl",
+        params: {"url": url});
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  /// 上传文件
+  Future<BaseResponse<bool>> installFromUpload(html.File file) async {
+    String response =
+        await NetUtil.upload("${_url()}/install/installFromUpload", file);
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
 }

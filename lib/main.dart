@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webdebugger_web_flutter/common/provider/api_list_provider.dart';
@@ -18,6 +20,7 @@ import 'module.dart';
 import 'module/api/api_view.dart';
 import 'module/device/device.dart';
 import 'module/env/environment.dart';
+import 'module/install/install.dart';
 import 'module/view/interface.dart';
 import 'module/logcat/log_cat.dart';
 import 'module/media/media.dart';
@@ -37,7 +40,7 @@ final List<Module> moduleList = [
   Module('切换环境', Icons.account_balance, Environment()),
   Module('日志', Icons.assignment, LogCat()),
   Module('API列表', Icons.list_alt, ApiView()),
-  Module('安装APK', Icons.adb, SelectableText('安装APK')),
+  Module('安装APK', Icons.adb, Install()),
 ];
 
 class Webdebugger extends StatelessWidget {
