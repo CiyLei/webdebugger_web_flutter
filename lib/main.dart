@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webdebugger_web_flutter/common/provider/api_list_provider.dart';
 import 'package:webdebugger_web_flutter/common/provider/device_provider.dart';
 import 'package:webdebugger_web_flutter/common/provider/logcat_provider.dart';
 import 'package:webdebugger_web_flutter/common/provider/media_provider.dart';
@@ -14,6 +15,7 @@ import 'common/provider/console_provider.dart';
 import 'common/provider/net_provider.dart';
 import 'home.dart';
 import 'module.dart';
+import 'module/api/api_view.dart';
 import 'module/device/device.dart';
 import 'module/env/environment.dart';
 import 'module/view/interface.dart';
@@ -34,7 +36,7 @@ final List<Module> moduleList = [
   Module('数据库', Icons.admin_panel_settings, DB()),
   Module('切换环境', Icons.account_balance, Environment()),
   Module('日志', Icons.assignment, LogCat()),
-  Module('API列表', Icons.list_alt, SelectableText('API列表')),
+  Module('API列表', Icons.list_alt, ApiView()),
   Module('安装APK', Icons.adb, SelectableText('安装APK')),
 ];
 
@@ -73,6 +75,9 @@ class Webdebugger extends StatelessWidget {
                         // 日志模块的状态存储
                         ChangeNotifierProvider(
                             create: (_) => LogcatProvider(response.data)),
+                        // Api列表模块的状态存储
+                        ChangeNotifierProvider(
+                            create: (_) => ApiListProvider()),
                       ], child: Home())),
             );
           },

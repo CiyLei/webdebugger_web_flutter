@@ -74,7 +74,7 @@ class SimpleNetWorkLog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        buildNetWorkRowBackground(
+        buildRowBackground(
             context,
             IconButton(
               onPressed: this.onPressed,
@@ -83,18 +83,18 @@ class SimpleNetWorkLog extends StatelessWidget {
                   : Icons.keyboard_arrow_right),
             )),
         Expanded(
-            child: buildNetWorkRowBackground(
+            child: buildRowBackground(
                 context, SelectableText(netWork.method)),
             flex: 2),
         Expanded(
-            child: buildNetWorkRowBackground(
+            child: buildRowBackground(
                 context,
                 SelectableText(
                     "${formatDate(DateTime.fromMillisecondsSinceEpoch(netWork.requestTime), _dateFormat)}")),
             flex: 5),
         Expanded(
             child:
-                buildNetWorkRowBackground(context, SelectableText(netWork.url)),
+                buildRowBackground(context, SelectableText(netWork.url)),
             flex: 30)
       ],
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html' as html;
 import 'package:webdebugger_web_flutter/constant.dart';
+import 'package:webdebugger_web_flutter/model/api_info.dart';
 import 'package:webdebugger_web_flutter/model/attributes.dart';
 import 'package:webdebugger_web_flutter/model/base_response.dart';
 import 'package:webdebugger_web_flutter/model/children.dart';
@@ -149,6 +150,23 @@ class ApiStore {
   Future<BaseResponse<bool>> retrofitEdit(String newUrl) async {
     String response = await NetUtil.post("${_url()}/retrofit/edit",
         params: {"newUrl": newUrl});
+    return BaseResponse.fromJson(json.decode(response), (data) => true);
+  }
+
+  /// 获取接口api列表
+  Future<BaseResponse<List<ApiInfo>>> apiList() async {
+    String response = await NetUtil.get("${_url()}/retrofit/apiList");
+    return BaseResponse.fromJson(
+        json.decode(response),
+        (data) => (data as List)
+            .map((e) => e == null ? null : ApiInfo.fromJson(e))
+            .toList());
+  }
+
+  /// 添加mock
+  Future<BaseResponse<bool>> addMock(String methodCode, String mock) async {
+    String response = await NetUtil.post("${_url()}/retrofit/addMock",
+        params: {"methodCode": methodCode, "responseContent": mock});
     return BaseResponse.fromJson(json.decode(response), (data) => true);
   }
 }

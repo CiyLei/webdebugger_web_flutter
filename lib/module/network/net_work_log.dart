@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +6,7 @@ import 'package:webdebugger_web_flutter/common/provider/net_provider.dart';
 
 import 'net_work_log_item.dart';
 
-Widget buildNetWorkRowBackground(BuildContext context, Widget child) {
+Widget buildRowBackground(BuildContext context, Widget child) {
   var borderSide = BorderSide(color: Theme.of(context).dividerColor);
   return Container(
     height: 50,
@@ -31,6 +29,8 @@ class _NetWorkLogState extends State<NetWorkLog> {
 
   /// 横向滚动条控制器
   ScrollController _horizontalScrollController = ScrollController();
+
+  /// 最小宽度
   final minWidth = 1500.0;
 
   @override
@@ -52,20 +52,20 @@ class _NetWorkLogState extends State<NetWorkLog> {
                   decoration: BoxDecoration(color: Colors.grey.withAlpha(80)),
                   child: Row(
                     children: [
-                      buildNetWorkRowBackground(
+                      buildRowBackground(
                           context,
                           Icon(Icons.chevron_right,
                               color: Colors.transparent, size: 40)),
                       Expanded(
-                          child: buildNetWorkRowBackground(
+                          child: buildRowBackground(
                               context, SelectableText("请求方式")),
                           flex: 2),
                       Expanded(
-                          child: buildNetWorkRowBackground(
+                          child: buildRowBackground(
                               context, SelectableText("请求时间")),
                           flex: 5),
                       Expanded(
-                          child: buildNetWorkRowBackground(
+                          child: buildRowBackground(
                               context, SelectableText("请求地址")),
                           flex: 30)
                     ],
