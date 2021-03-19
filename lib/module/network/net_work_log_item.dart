@@ -83,8 +83,7 @@ class SimpleNetWorkLog extends StatelessWidget {
                   : Icons.keyboard_arrow_right),
             )),
         Expanded(
-            child: buildRowBackground(
-                context, SelectableText(netWork.method)),
+            child: buildRowBackground(context, SelectableText(netWork.method)),
             flex: 2),
         Expanded(
             child: buildRowBackground(
@@ -93,8 +92,7 @@ class SimpleNetWorkLog extends StatelessWidget {
                     "${formatDate(DateTime.fromMillisecondsSinceEpoch(netWork.requestTime), _dateFormat)}")),
             flex: 5),
         Expanded(
-            child:
-                buildRowBackground(context, SelectableText(netWork.url)),
+            child: buildRowBackground(context, SelectableText(netWork.url)),
             flex: 30)
       ],
     );
@@ -137,8 +135,10 @@ class _DetailedNetWorkLogState extends State<DetailedNetWorkLog> {
             ),
             isExpand: widget.netWork.expandTimeAnalysis,
             onExpandValueChanged: () {
-              widget.netWork.expandTimeAnalysis =
-                  !widget.netWork.expandTimeAnalysis;
+              setState(() {
+                widget.netWork.expandTimeAnalysis =
+                    !widget.netWork.expandTimeAnalysis;
+              });
             }),
         SizedBox(height: 8),
         Expand(
