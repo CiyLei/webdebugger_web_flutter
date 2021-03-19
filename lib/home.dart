@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'expand.dart';
 import 'module.dart';
+import 'dart:html' as html;
+
+import 'net/api_store.dart';
 
 /// 脚手架框架的状态存储处
 class HomeProvider with ChangeNotifier {
@@ -45,6 +48,19 @@ class _HomeState extends State<Home> {
               : Icons.wb_incandescent_outlined),
           onPressed: () => context.read<HomeProvider>().toggleExpand(),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextButton(
+                onPressed: () {
+                  html.window.location.replace(ApiStore.oldIndexUrl());
+                },
+                child: Text(
+                  "回到旧版",
+                  style: TextStyle(color: Colors.white),
+                )),
+          )
+        ],
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

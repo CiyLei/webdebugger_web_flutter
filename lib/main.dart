@@ -47,6 +47,7 @@ class Webdebugger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'WebDebugger',
       home: DefaultTextStyle(
         style: TextStyle(),

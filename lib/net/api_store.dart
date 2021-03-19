@@ -42,6 +42,9 @@ class ApiStore {
   static String mediaUrl(int mediaPort, String address) =>
       "http://${_hostName()}:$mediaPort/$address";
 
+  /// 旧版地址
+  static String oldIndexUrl() => "http://${_hostName()}:${_port()}/index2.html";
+
   /// 获取设备信息
   Future<BaseResponse<DeviceInfo>> getDeviceInfo() async {
     String response = await NetUtil.get("${_url()}/device/info");
