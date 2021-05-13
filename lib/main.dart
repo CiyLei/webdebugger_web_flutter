@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webdebugger_web_flutter/common/provider/api_list_provider.dart';
@@ -47,10 +45,11 @@ class Webdebugger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(fontFamily: 'SourceHanSansCN'),
       debugShowCheckedModeBanner: false,
       title: 'WebDebugger',
       home: DefaultTextStyle(
-        style: TextStyle(),
+        style: TextStyle(fontFamily: 'SourceHanSansCN'),
         child: LayoutBuilder(
           builder: (context, constraints) {
             // 判断设备宽度，决定默认是否展开模块列表
